@@ -1,0 +1,165 @@
+<body>
+  <div class="container">
+    <br>
+    <h1 class="text-center">Assignment 2</h1>
+    <br>
+
+    {{#if success}}
+      <div class="alert alert-success alert-dismissible">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">
+          &times;
+        </a>
+        <strong>Success!</strong> Image has been uploaded successfully
+      </div>
+    {{/if}}
+
+    <form action="/" method="POST" enctype="multipart/form-data">
+      <div class="form-group">
+        <label for="select image">Select Image:</label>
+        <input type="file" class="form-control" name="image" id="">
+        <br>
+        <label for="description">Image Description:</label>
+        <input type="text" class="form-control" name="description">
+      </div>
+      <div class="form-group">
+        <button class="btn btn-block btn-danger">
+          Submit
+        </button>
+      </div>
+    </form>
+
+    {{#each records}}
+      {{#each this}}
+        <div class="slide">
+          <img src="{{this.imagename}}">
+          <p class="caption">{{this.imagedescription}}</p>
+        </div>
+      {{/each}}
+    {{/each}}
+  </div>
+
+  <div class="buttons">
+    <button class="btn btn-prev">&#10094;</button>
+    <button class="btn btn-rand margin">Random</button>
+    <button class="btn btn-next">&#10095;</button>
+    </div>
+</body>
+
+
+<style>
+
+  body {
+    max-width: 75rem;
+    margin: 0 auto;
+    padding: 0 1.25rem;
+    font-family: 'Lato', sans-serif;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 800px;
+    /* make the container height slightly bigger than the slide height so captions can be underneath */
+    height: 800px;
+    position: relative;
+    /* IMPORTANT: sets all slides except the current slide to be hidden */
+    overflow: hidden;
+  }
+
+  .slide {
+    width: 100%;
+    max-width: 800px;
+    height: 650px;
+    position: absolute;
+    /*  add a transition effect when switching current slide */
+    transition: all 0.5s;
+  }
+
+  /* image properties */
+  .slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* caption text properties */
+  .caption {
+    color: black;
+    font-size: 15px;
+    text-align: center;
+    line-height: 2px;
+    position: relative;
+  }
+
+  /* button properties */
+  .buttons {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    text-align: center;
+  }
+
+  /* adds space between the buttons for aesthetic reasons */
+  button.margin {
+    margin-right: 10px;
+    margin-left: 10px;
+  }
+</style>
+
+<script>
+  // select all of the slides
+  const slides = document.querySelectorAll(".slide");
+
+  // loop through slides and use the transform property to align them next to each other (unselected slides are hidden using CSS)
+  slides.forEach((slide, indx) => { slide.style.transform = `translateX(${indx * 100}%)`; });
+
+  // set button variables
+  const nextSlide = document.querySelector(".btn-next");
+  const prevSlide = document.querySelector(".btn-prev");
+  const randSlide = document.querySelector(".btn-rand");
+
+  // load page on random slide function
+  let curSlide = Math.floor(Math.random() * slides.length);
+  slides.forEach((slide, indx) => { slide.style.transform = `translateX(${100 * (indx - curSlide)}%)`; });
+
+  // set number of slides for use below
+  let maxSlide = slides.length - 1;
+
+  // event listener for next button
+  nextSlide.addEventListener("click", function () {
+    // goes back to the first slide if currently on the last slide
+    if (curSlide === maxSlide) {
+      curSlide = 0;
+    } 
+    // otherwise go to the next slide
+    else {
+      curSlide++;
+    }
+    // function for moving the slides
+    slides.forEach((slide, indx) => { slide.style.transform = `translateX(${100 * (indx - curSlide)}%)`; });
+  });
+
+  // event listener for previous button
+  prevSlide.addEventListener("click", function () {
+    // goes to the last slide if currently on the first slide
+    if (curSlide === 0) {
+      curSlide = maxSlide;
+    }
+    // otherwise go to the previous slide
+    else {
+      curSlide--;
+    }
+    // function for moving the slides
+    slides.forEach((slide, indx) => { slide.style.transform = `translateX(${100 * (indx - curSlide)}%)`; });
+  });
+
+  // event listener for random button
+  randSlide.addEventListener("click", function () {
+    // select a random slide
+    curSlide = Math.floor(Math.random() * slides.length);
+
+    // function for moving the slides
+    slides.forEach((slide, indx) => { slide.style.transform = `translateX(${100 * (indx - curSlide)}%)`; });
+  });
+
+</script>
